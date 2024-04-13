@@ -129,6 +129,7 @@ GameObject:
   m_Component:
   - component: {fileID: 460942646}
   - component: {fileID: 460942645}
+  - component: {fileID: 460942647}
   m_Layer: 0
   m_Name: ChatGPT
   m_TagString: Untagged
@@ -167,6 +168,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &460942647
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 460942644}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d881e88693e014ccab199fee7608a611, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -871,6 +884,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b470a2fe5184041b3806af787694c601, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Topics: []
 --- !u!4 &2091769393
 Transform:
   m_ObjectHideFlags: 0
