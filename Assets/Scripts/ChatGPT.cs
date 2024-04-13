@@ -15,8 +15,9 @@ namespace OpenAI
         private OpenAIApi openai;
         private List<ChatMessage> messages = new();
         private static string prompt = "You give trivia questions. For each list of topics I give you, give me 5 questions for each topic with 4 possible answers each. Desired format: <question> \n#<answer_1> \n#<answer_2> \n#<answer_3> \n*<correct_answer> \nTopics: ";
-        private static Regex alphanumeric = new("^[a-zA-Z0-9._ ]+$");
+        private static Regex alphanumeric = new("^[a-zA-Z0-9.'& ]+$");
         public static event Action<string, string> OnChatCompletion;
+        public static event Action<string> OnChatError;
 
         void Start()
         {
@@ -35,8 +36,9 @@ namespace OpenAI
 
         private bool ValidateString(string text)
         {
-            if(!alphanumeric.IsMatch(text)) return false;
-            return true;
+            if(alphanumeric.IsMatch(text)) return true;
+            OnChatError?.Invoke("You just put an ILLEGAL character!");
+            return false;
         }
 
         public void ValidateTopics()
@@ -47,16 +49,19 @@ namespace OpenAI
             {
                 field.enabled = false;
 
-                if (ValidateString(field.text.Trim()))
+                if (field.text != "" && ValidateString(field.text.Trim()))
                 {
                     topics += field.text.Trim() + ", ";
                 }
             }
 
-            Debug.Log(topics);
-
-            if (topics != "")
+            if (topics == "")
             {
+                OnChatError?.Invoke("You must input at least one topic!");
+            }
+            else
+            {
+                Debug.Log("Topics chosen: " + topics);
                 MakeQuestions(topics);
             }
 
@@ -93,7 +98,9 @@ namespace OpenAI
             }
             else
             {
-                Debug.LogWarning("No text was generated from this prompt.");
+                string errorMsg = "No text was generated from this prompt.";
+                Debug.LogWarning(errorMsg);
+                OnChatError?.Invoke(errorMsg);
             }
         }
     }

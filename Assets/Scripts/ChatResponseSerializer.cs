@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using OpenAI;
 using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.Windows.Speech;
 
 /// <summary>
 /// Version of question object with in-game properties
@@ -54,6 +55,11 @@ public class ChatResponseSerializer : Singleton<ChatResponseSerializer>
         Questions.Clear();
 
         Topics = rTopics.Split(',').ToList();
+        for (int i = 0; i < Topics.Count; i++)
+        {
+            Topics[i] = Topics[i].Trim().ToLower();
+        }
+
         SerializeChatResponse(response);
 
         foreach(GameQuestion q in Questions)

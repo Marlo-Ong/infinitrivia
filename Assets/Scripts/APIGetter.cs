@@ -1,24 +1,34 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Networking;
 
 // via https://medium.com/bina-nusantara-it-division/how-to-fetch-data-from-api-in-unity-99e58820b2d4
 
-[System.Serializable]
+[Serializable]
 public class Key
 {
     public string api_key;
+}
+
+[Serializable]
+public class Wrapper<T>
+{
+    public T[] Items;
 }
 
 public class APIGetter : Singleton<APIGetter>
 {
     public static string URL = "https://66199d83125e9bb9f29a6b60.mockapi.io";
     public static event Action<string> OnGetAPIKey;
+    public static event Action<List<Question>> OnGetQuestions;
 
     void Start()
     {
-        StartCoroutine(FetchData());
+        StartCoroutine(FetchAPIKey());
+        StartCoroutine(FetchQuestions());
     }
 
     /// <remarks>
@@ -26,7 +36,7 @@ public class APIGetter : Singleton<APIGetter>
     /// but mockapi.io always requires arrays as root
     /// [ and ] characters are removed from the JSON string
     /// </remarks>
-    public IEnumerator FetchData()
+    public IEnumerator FetchAPIKey()
     {
         using UnityWebRequest req = UnityWebRequest.Get(URL + "/openai");
         yield return req.SendWebRequest();
@@ -38,7 +48,6 @@ public class APIGetter : Singleton<APIGetter>
         else
         {
             Key myKey = JsonUtility.FromJson<Key>(req.downloadHandler.text[1..^1]);
-            JsonUtility.ToJson(myKey);
             Debug.Log("Got API key: " + myKey.api_key);
             OnGetAPIKey?.Invoke(myKey.api_key);
         }
@@ -52,7 +61,6 @@ public class APIGetter : Singleton<APIGetter>
     private IEnumerator ContinuePostQuestion(Question q)
     {
         string stringifiedQuestion = JsonUtility.ToJson(q);
-        Debug.Log(stringifiedQuestion);
         using UnityWebRequest req = UnityWebRequest.Post(URL + "/questionsDB", stringifiedQuestion, "application/json");
         yield return req.SendWebRequest();
 
@@ -63,6 +71,24 @@ public class APIGetter : Singleton<APIGetter>
         else
         {
             Debug.Log("Uploaded question to DB: " + q.question);
+        }
+    }
+
+    public IEnumerator FetchQuestions()
+    {
+        using UnityWebRequest req = UnityWebRequest.Get(URL + "/questionsDB");
+        yield return req.SendWebRequest();
+
+        if (req.result == UnityWebRequest.Result.ConnectionError)
+        {
+            Debug.Log(req.error);
+        }
+        else
+        {
+            Wrapper<Question> questionWrapper = JsonUtility.FromJson<Wrapper<Question>>("{\"Items\":" + req.downloadHandler.text + "}");
+            List<Question> questions = questionWrapper.Items.ToList();
+            Debug.Log("Got questions: count " + questions.Count);
+            OnGetQuestions?.Invoke(questions);
         }
     }
 }
