@@ -119,6 +119,7 @@ public class GameplayManager : Singleton<GameplayManager>
         StateMachine.Instance.ChangeToState(State.QuestionResults);
         answers.ForEach((answer)=>
         {
+            answer.Enable();
             if (answer.IsCorrectAnswer) answer.ChangeButtonColor(Color.green);
             else answer.ChangeButtonColor(Color.red);
         });

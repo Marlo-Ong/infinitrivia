@@ -31,7 +31,9 @@ public class AnswerButtonController : ButtonController
     {
         var newColorBlock = button.colors;
         newColorBlock.normalColor = newColor;
-        newColorBlock.disabledColor = newColor;
+        newColorBlock.highlightedColor = newColor;
+        newColorBlock.selectedColor = newColor;
+        newColorBlock.pressedColor = newColor;
         button.colors = newColorBlock;
     }
 }
