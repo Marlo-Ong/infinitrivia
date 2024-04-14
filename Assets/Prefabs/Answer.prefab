@@ -60,6 +60,22 @@ PrefabInstance:
       propertyPath: m_Name
       value: Button
       objectReference: {fileID: 0}
+    - target: {fileID: 4213142316007298900, guid: 31bd8cf64d0ce49d0902be71145eed0e, type: 3}
+      propertyPath: m_Colors.m_DisabledColor.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4213142316007298900, guid: 31bd8cf64d0ce49d0902be71145eed0e, type: 3}
+      propertyPath: m_Colors.m_DisabledColor.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4213142316007298900, guid: 31bd8cf64d0ce49d0902be71145eed0e, type: 3}
+      propertyPath: m_Colors.m_DisabledColor.g
+      value: 0.9107641
+      objectReference: {fileID: 0}
+    - target: {fileID: 4213142316007298900, guid: 31bd8cf64d0ce49d0902be71145eed0e, type: 3}
+      propertyPath: m_Colors.m_DisabledColor.r
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4225807272785926116, guid: 31bd8cf64d0ce49d0902be71145eed0e, type: 3}
       propertyPath: m_SizeDelta.x
       value: 1187

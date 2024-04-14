@@ -5,6 +5,48 @@ TextureImporter:
   - first:
       213: 7924465325796065554
     second: infinitrivia_logo_0
+  - first:
+      213: -2721904162788093727
+    second: infinitrivia_logo_1
+  - first:
+      213: -1888248592710583811
+    second: infinitrivia_logo_2
+  - first:
+      213: 5879831399211196171
+    second: infinitrivia_logo_3
+  - first:
+      213: 887721721032113398
+    second: infinitrivia_logo_4
+  - first:
+      213: 5041071516352781752
+    second: infinitrivia_logo_5
+  - first:
+      213: 4553491119999990089
+    second: infinitrivia_logo_6
+  - first:
+      213: -4743198540303501125
+    second: infinitrivia_logo_7
+  - first:
+      213: 6296050235578913606
+    second: infinitrivia_logo_8
+  - first:
+      213: 7178420403015956622
+    second: infinitrivia_logo_9
+  - first:
+      213: 1865680781509627604
+    second: infinitrivia_logo_10
+  - first:
+      213: -5584863957257807732
+    second: infinitrivia_logo_11
+  - first:
+      213: 3058830238933482903
+    second: infinitrivia_logo_12
+  - first:
+      213: -7129835320862233011
+    second: infinitrivia_logo_13
+  - first:
+      213: 4084335482571120273
+    second: infinitrivia_logo_14
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -46,7 +88,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
+  spriteMode: 1
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -116,10 +158,10 @@ TextureImporter:
       name: infinitrivia_logo_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 1640
-        height: 697
+        x: 269
+        y: 660
+        width: 676
+        height: 205
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -133,10 +175,304 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: infinitrivia_logo_1
+      rect:
+        serializedVersion: 2
+        x: 1102
+        y: 543
+        width: 57
+        height: 127
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1e0db50d59ad93ad0800000000000000
+      internalID: -2721904162788093727
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: infinitrivia_logo_2
+      rect:
+        serializedVersion: 2
+        x: 105
+        y: 435
+        width: 130
+        height: 193
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: df9bad7c8e79bc5e0800000000000000
+      internalID: -1888248592710583811
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: infinitrivia_logo_3
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 453
+        width: 103
+        height: 161
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b0fdb21418b599150800000000000000
+      internalID: 5879831399211196171
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: infinitrivia_logo_4
+      rect:
+        serializedVersion: 2
+        x: 385
+        y: 461
+        width: 58
+        height: 144
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6fc7481b332d15c00800000000000000
+      internalID: 887721721032113398
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: infinitrivia_logo_5
+      rect:
+        serializedVersion: 2
+        x: 461
+        y: 466
+        width: 30
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8bd1c8bd5db75f540800000000000000
+      internalID: 5041071516352781752
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: infinitrivia_logo_6
+      rect:
+        serializedVersion: 2
+        x: 506
+        y: 469
+        width: 94
+        height: 136
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 949be775c00413f30800000000000000
+      internalID: 4553491119999990089
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: infinitrivia_logo_7
+      rect:
+        serializedVersion: 2
+        x: 631
+        y: 465
+        width: 28
+        height: 130
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bb8fe02ee06cc2eb0800000000000000
+      internalID: -4743198540303501125
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: infinitrivia_logo_8
+      rect:
+        serializedVersion: 2
+        x: 678
+        y: 470
+        width: 70
+        height: 136
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 64312b3d450106750800000000000000
+      internalID: 6296050235578913606
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: infinitrivia_logo_9
+      rect:
+        serializedVersion: 2
+        x: 752
+        y: 474
+        width: 82
+        height: 111
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e88be2ad25fde9360800000000000000
+      internalID: 7178420403015956622
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: infinitrivia_logo_10
+      rect:
+        serializedVersion: 2
+        x: 852
+        y: 471
+        width: 21
+        height: 122
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4de872639ca34e910800000000000000
+      internalID: 1865680781509627604
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: infinitrivia_logo_11
+      rect:
+        serializedVersion: 2
+        x: 883
+        y: 492
+        width: 73
+        height: 119
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c8814cc12d39e72b0800000000000000
+      internalID: -5584863957257807732
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: infinitrivia_logo_12
+      rect:
+        serializedVersion: 2
+        x: 963
+        y: 484
+        width: 20
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 79d7adb55e5237a20800000000000000
+      internalID: 3058830238933482903
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: infinitrivia_logo_13
+      rect:
+        serializedVersion: 2
+        x: 1006
+        y: 477
+        width: 82
+        height: 153
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d4e29f81d8cbd0d90800000000000000
+      internalID: -7129835320862233011
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: infinitrivia_logo_14
+      rect:
+        serializedVersion: 2
+        x: 1103
+        y: 483
+        width: 27
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 19edc2e4b797ea830800000000000000
+      internalID: 4084335482571120273
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 5e97eb03825dee720800000000000000
     internalID: 0
     vertices: []
     indices: 
@@ -145,6 +481,20 @@ TextureImporter:
     secondaryTextures: []
     nameFileIdTable:
       infinitrivia_logo_0: 7924465325796065554
+      infinitrivia_logo_1: -2721904162788093727
+      infinitrivia_logo_10: 1865680781509627604
+      infinitrivia_logo_11: -5584863957257807732
+      infinitrivia_logo_12: 3058830238933482903
+      infinitrivia_logo_13: -7129835320862233011
+      infinitrivia_logo_14: 4084335482571120273
+      infinitrivia_logo_2: -1888248592710583811
+      infinitrivia_logo_3: 5879831399211196171
+      infinitrivia_logo_4: 887721721032113398
+      infinitrivia_logo_5: 5041071516352781752
+      infinitrivia_logo_6: 4553491119999990089
+      infinitrivia_logo_7: -4743198540303501125
+      infinitrivia_logo_8: 6296050235578913606
+      infinitrivia_logo_9: 7178420403015956622
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

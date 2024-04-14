@@ -41,30 +41,11 @@ public class ButtonController : MonoBehaviour
         entry.eventID = EventTriggerType.PointerClick;
         entry.callback.AddListener((data) => { OnPointerClick((PointerEventData)data); });
         _eventTrigger.triggers.Add(entry);
-
-        entry = new EventTrigger.Entry();
-        entry.eventID = EventTriggerType.PointerEnter;
-        entry.callback.AddListener((data) => { OnPointerEnter((PointerEventData)data); });
-        _eventTrigger.triggers.Add(entry);
-
-        entry = new EventTrigger.Entry();
-        entry.eventID = EventTriggerType.PointerExit;
-        entry.callback.AddListener((data) => { OnPointerExit((PointerEventData)data); });
-        _eventTrigger.triggers.Add(entry);
-
-        entry = new EventTrigger.Entry();
-        entry.eventID = EventTriggerType.PointerUp;
-        entry.callback.AddListener((data) => { OnPointerUp((PointerEventData)data); });
-        _eventTrigger.triggers.Add(entry);
-
-        entry = new EventTrigger.Entry();
-        entry.eventID = EventTriggerType.PointerDown;
-        entry.callback.AddListener((data) => { OnPointerDown((PointerEventData)data); });
-        _eventTrigger.triggers.Add(entry);
     }
 
     private void OnPointerClick(PointerEventData data)
     {
+        SoundManager.Instance.PlaySFX(Random.Range(4,6));
         AnimateButton();
     }
 
@@ -92,22 +73,6 @@ public class ButtonController : MonoBehaviour
                 StateMachine.Instance.ChangeToState(State.MainMenu);
                 break;
         }
-    }
-
-    private void OnPointerDown(PointerEventData data)
-    {
-    }
-
-    private void OnPointerUp(PointerEventData data)
-    {
-    }
-
-    private void OnPointerExit(PointerEventData data)
-    {
-    }
-
-    private void OnPointerEnter(PointerEventData data)
-    {
     }
 
     private void AnimateButton()

@@ -7,9 +7,15 @@ using System.Linq;
 public class GameplayManager : Singleton<GameplayManager>
 {
     [SerializeField] private GameObject Container_Answers;
+    [SerializeField] private GameObject Container_ScoreHistory;
+    [SerializeField] private GameObject checkmarkIcon;
+    [SerializeField] private GameObject redxIcon;
     [SerializeField] private TMP_Text timerText;
     [SerializeField] private TMP_Text questionText;
     [SerializeField] private TMP_Text scoreText;
+    [SerializeField] private TMP_Text firstTryBonusText;
+    [SerializeField] private TMP_Text speedBonusText;
+    [SerializeField] private TMP_Text correctAnswerBonusText;
     [SerializeField] private List<AnswerButtonController> answers;
     public int ShowAnswersDelay;
     public int TimePerQuestion;
@@ -20,7 +26,7 @@ public class GameplayManager : Singleton<GameplayManager>
     private GameQuestion _currentQuestion;
     private List<GameQuestion> questions;
     private int _timeRemaining;
-    private int _timeRemainingWhenAnswer;
+    private int _answerTime;
 
     # region Non-Loop Methods
     public void OnAnswerClicked(AnswerButtonController a)
@@ -29,20 +35,32 @@ public class GameplayManager : Singleton<GameplayManager>
         a.Disable();
         _chosenAnswer = a;
         _changedAnswerCount++;
-        _timeRemainingWhenAnswer = _timeRemaining;
+        _answerTime = _timeRemaining;
     }
 
     private int GetQuestionScore()
     {
         int baseCorrectAnswerScore = 50; 
-        int speedBonus = 100 * (_timeRemainingWhenAnswer / TimePerQuestion);
+        float preSpeedBonus = (float)_answerTime / (float)TimePerQuestion;
+        int speedBonus = (int)(100f * preSpeedBonus);
 
-        int steadfastBonus = 100;
-        if (_changedAnswerCount == 2) steadfastBonus /= 2;
-        else if (_changedAnswerCount == 3) steadfastBonus /= 4;
-        else if (_changedAnswerCount > 3) steadfastBonus = 0;
+        int firstTryBonus = 100;
+        if (_changedAnswerCount == 2) firstTryBonus /= 2;
+        else if (_changedAnswerCount == 3) firstTryBonus /= 4;
+        else if (_changedAnswerCount > 3) firstTryBonus = 0;
 
-        return baseCorrectAnswerScore + speedBonus + steadfastBonus;
+        if (speedBonus > 0)
+        {
+            speedBonusText.text = "+" + speedBonus + " speedy answer!";
+            speedBonusText.gameObject.SetActive(true);
+        }
+        if (firstTryBonus > 0)
+        {
+            firstTryBonusText.text = "+" + firstTryBonus + " first try!";
+            firstTryBonusText.gameObject.SetActive(true);
+        }
+
+        return baseCorrectAnswerScore + speedBonus + firstTryBonus;
     }
 
     # endregion
@@ -74,8 +92,9 @@ public class GameplayManager : Singleton<GameplayManager>
     {
         _chosenAnswer = null;
         totalScore = 0;
-        _timeRemainingWhenAnswer = 0;
+        _answerTime = 0;
         _currentQuestion = null;
+        _changedAnswerCount = 0;
         questions.Clear();
         StateMachine.Instance.ChangeToState(State.OverallResults);
     }
@@ -100,6 +119,7 @@ public class GameplayManager : Singleton<GameplayManager>
     {
         yield return new WaitForSeconds(ShowAnswersDelay);
         SoundManager.Instance.PlaySFX(Random.Range(0,2));
+        scoreText.gameObject.SetActive(false);
         Container_Answers.SetActive(true);
         StartCoroutine(StartTimer(TimePerQuestion));
     }
@@ -126,20 +146,45 @@ public class GameplayManager : Singleton<GameplayManager>
             else answer.ChangeButtonColor(Color.red);
         });
 
-        if (_chosenAnswer != null && _chosenAnswer.IsCorrectAnswer)
+        if (_chosenAnswer != null)
         {
-            SoundManager.Instance.PlaySFX(2);
-            Debug.Log("Correct! It was: " + _chosenAnswer.AnswerText);
-            Debug.Log("Your round score: " + GetQuestionScore());
-            totalScore += GetQuestionScore();
-            scoreText.text = "Score: " + totalScore;
+            if (_chosenAnswer.IsCorrectAnswer)
+            {
+                GetCorrectAnswer();
+            }
+            else
+            {
+                GetIncorrectAnswer();
+            }
         }
 
         yield return new WaitForSeconds(ResultsScreenDuration);
 
         Container_Answers.SetActive(false);
+        scoreText.gameObject.SetActive(true);
         answers.ForEach((answer)=>{answer.Reset();});
         TryStartQuestion();
+    }
+
+    private void GetCorrectAnswer()
+    {
+        SoundManager.Instance.PlaySFX(2);
+        correctAnswerBonusText.gameObject.SetActive(true);
+        var icon = Instantiate(checkmarkIcon);
+        icon.transform.parent = Container_ScoreHistory.transform;
+        icon.SetActive(true);
+        icon.transform.localScale = new(1,1,1);
+        totalScore += GetQuestionScore();
+        scoreText.text = "Score: " + totalScore;
+    }
+
+    private void GetIncorrectAnswer()
+    {
+        var icon = Instantiate(redxIcon);
+        icon.transform.parent = Container_ScoreHistory.transform;
+        icon.SetActive(true);
+        icon.transform.localScale = new(1,1,1);
+        SoundManager.Instance.PlaySFX(3);
     }
 
     # endregion
