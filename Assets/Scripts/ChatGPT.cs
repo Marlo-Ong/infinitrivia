@@ -37,7 +37,7 @@ namespace OpenAI
         private bool ValidateString(string text)
         {
             if(alphanumeric.IsMatch(text)) return true;
-            OnChatError?.Invoke("You just put an ILLEGAL character!");
+            StateMachine.Instance.ThrowError("You just put an ILLEGAL character!");
             return false;
         }
 
@@ -57,7 +57,7 @@ namespace OpenAI
 
             if (topics == "")
             {
-                OnChatError?.Invoke("You must input at least one topic!");
+                StateMachine.Instance.ThrowError("You must input at least one topic!", State.TopicSelect);
             }
             else
             {
@@ -99,8 +99,7 @@ namespace OpenAI
             else
             {
                 string errorMsg = "No text was generated from this prompt.";
-                Debug.LogWarning(errorMsg);
-                OnChatError?.Invoke(errorMsg);
+                StateMachine.Instance.ThrowError(errorMsg);
             }
         }
     }

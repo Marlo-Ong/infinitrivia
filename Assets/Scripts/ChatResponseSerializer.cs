@@ -5,19 +5,28 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using OpenAI;
 using Unity.Mathematics;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Windows.Speech;
 
 /// <summary>
 /// Version of question object with in-game properties
 /// </summary>
-public struct GameQuestion
+public class GameQuestion
 {
-    public int number;
-    public string topic;
-    public string question;
-    public List<string> answers;
-    public string correctAnswer;
+    public string topic = "";
+    public string question = "";
+    public List<string> answers = new();
+    public string correctAnswer = "";
+    public GameQuestion DeepCopy()
+    {
+       GameQuestion other = (GameQuestion)MemberwiseClone();
+       other.answers = answers.Select(a => new string(a)).ToList();
+       other.topic = string.Copy(topic);
+       other.question = string.Copy(question);
+       other.correctAnswer = string.Copy(correctAnswer);
+       return other;
+    }
 };
 
 /// <summary>
@@ -64,36 +73,38 @@ public class ChatResponseSerializer : Singleton<ChatResponseSerializer>
 
         foreach(GameQuestion q in Questions)
         {
-            APIGetter.Instance.PostQuestion(JSONifyQuestion(q));
+            Question json = JSONifyQuestion(q);
+            if (json != null)
+            {
+                APIGetter.Instance.PostQuestion(json);
+            }
         }
     }
 
     private void SerializeChatResponse(string response)
     {
-        int topicsIndex = 0;
-        GameQuestion currentQuestion = new()
+        try
         {
-            answers = new()
-        };
-
-        foreach (string line in response.Split('\n'))
-        {
-            if (line != "") 
+            int topicsIndex = 0;
+            GameQuestion currentQuestion = new()
             {
+                answers = new()
+            };
+
+            foreach (string line in response.Split('\n'))
+            {
+                if (line == "") continue;
+
                 Debug.Log(line);
-                if (Regex.IsMatch(line, "^[0-9]. (.*)$")) // line is a numbered question
+                if (Regex.IsMatch(line, "^[0-9]. (.*)$") || line.StartsWith("Question")) // line is a numbered question
                 {
                     // add a copy of this question to the list
-                    GameQuestion newQ = new()
-                    {
-                        answers = new()
-                    };
-
-                    newQ = currentQuestion;
+                    GameQuestion newQ = currentQuestion.DeepCopy();
                     Questions.Add(newQ);
 
                     // reset question to act as new
                     currentQuestion.answers.Clear();
+                    currentQuestion.correctAnswer = "";
                     currentQuestion.question = line[3..line.Length];
                 }
 
@@ -114,23 +125,40 @@ public class ChatResponseSerializer : Singleton<ChatResponseSerializer>
                     currentQuestion.correctAnswer = answerText;
                 }
             }
+        
+            Questions.RemoveAt(0); // remove junk currentQuestion
+            StateMachine.Instance.ChangeToState(State.RoundStart);
         }
-    
-        Questions.RemoveAt(0); // remove junk currentQuestion
+
+        catch (Exception err)
+        {
+            StateMachine.Instance.ThrowError(err.Message);
+        }
     }
 
     private Question JSONifyQuestion(GameQuestion q)
     {
-        Question newQ = new()
+        try
         {
-            topic = q.topic,
-            answer1 = q.answers[0],
-            answer2 = q.answers[1],
-            answer3 = q.answers[2],
-            answer4 = q.answers[3],
-            correct_answer = q.correctAnswer,
-            question = q.question
-        };
-        return newQ;
+            Question newQ = new()
+            {
+                topic = q.topic,
+                answer1 = q.answers[0],
+                answer2 = q.answers[1],
+                answer3 = q.answers[2],
+                answer4 = q.answers[3],
+                correct_answer = q.correctAnswer,
+                question = q.question
+            };
+            return newQ;
+        }
+
+        catch (Exception err)
+        {
+            StateMachine.Instance.ThrowError(err.Message);
+        }
+
+        return null;
+
     }
 }

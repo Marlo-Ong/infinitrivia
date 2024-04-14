@@ -13,6 +13,7 @@ public enum State
     Answering,
     QuestionResults,
     OverallResults,
+    None
 }
 
 public class StateMachine : Singleton<StateMachine>
@@ -29,20 +30,6 @@ public class StateMachine : Singleton<StateMachine>
     void Start()
     {
         StateEnter(State.MainMenu);
-
-        OpenAI.ChatGPT.OnChatCompletion += OpenAI_ChatGPT_OnChatCompletion;
-        OpenAI.ChatGPT.OnChatError += OpenAI_ChatGPT_OnChatError;
-    }
-
-    void OnDestroy()
-    {
-        OpenAI.ChatGPT.OnChatCompletion -= OpenAI_ChatGPT_OnChatCompletion;
-        OpenAI.ChatGPT.OnChatError -= OpenAI_ChatGPT_OnChatError;
-    }
-
-    void Update()
-    {
-        //StateUpdate(CurrentState);
     }
 
     # endregion
@@ -80,6 +67,7 @@ public class StateMachine : Singleton<StateMachine>
                 OpenAI.ChatGPT.Instance.ValidateTopics();
                 break;
             case State.RoundStart:
+                GameplayManager.Instance.StartNewRound();
                 break;
             case State.QuestionDisplay:
                 break;
@@ -118,44 +106,16 @@ public class StateMachine : Singleton<StateMachine>
         }
     }
 
-    private void StateUpdate(State state)
-    {
-        switch (state)
-        {
-            case State.MainMenu:
-                break;
-            case State.TopicSelect:
-                break;
-            case State.RoundStart:
-                break;
-            case State.QuestionDisplay:
-                break;
-            case State.Answering:
-                break;
-            case State.QuestionResults:
-                break;
-            case State.OverallResults:
-                break;
-        }
-    }
-
     # endregion
 
-    private void OpenAI_ChatGPT_OnChatCompletion(string _, string __)
+    public void ThrowError(string err, State revertState = State.None)
     {
-        if (CurrentState == State.TopicSubmit) 
+        Debug.LogError(err);
+        Canvas_ErrorMessage.SetActive(true);
+        Canvas_ErrorMessage.GetComponentInChildren<TMP_Text>().text = err;
+        if (revertState != State.None)
         {
-            ChangeToState(State.RoundStart);
-        }
-    }
-
-    private void OpenAI_ChatGPT_OnChatError(string err)
-    {
-        if (CurrentState == State.TopicSubmit) 
-        {
-            Canvas_ErrorMessage.SetActive(true);
-            Canvas_ErrorMessage.GetComponentInChildren<TMP_Text>().text = err;
-            ChangeToState(State.TopicSelect);
+            ChangeToState(revertState);
         }
     }
 }

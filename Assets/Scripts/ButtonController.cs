@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -83,7 +84,10 @@ public class ButtonController : MonoBehaviour
             case ButtonTypes.ErrorOK:
                 StateMachine.Instance.Canvas_ErrorMessage.SetActive(false);
                 break;
-            
+            case ButtonTypes.Answer:
+                var answerClicked = GetComponentInParent<AnswerButtonController>();
+                GameplayManager.Instance.OnAnswerClicked(answerClicked);
+                break;
         }
     }
 
@@ -105,9 +109,12 @@ public class ButtonController : MonoBehaviour
 
     private void AnimateButton()
     {
-        const float DURATION = 0.15f;
-        _startScale = transform.localScale;
-        _handleButtonAnimation ??= StartCoroutine(ContinueButtonAnimateScale(DURATION));
+        if (gameObject.GetComponent<Button>().interactable)
+        {
+            const float DURATION = 0.15f;
+            _startScale = transform.localScale;
+            _handleButtonAnimation ??= StartCoroutine(ContinueButtonAnimateScale(DURATION));
+        }
     }
 
     private IEnumerator ContinueButtonAnimateScale(float duration)
