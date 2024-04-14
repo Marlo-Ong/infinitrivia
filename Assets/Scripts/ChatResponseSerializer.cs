@@ -69,19 +69,21 @@ public class ChatResponseSerializer : Singleton<ChatResponseSerializer>
             Topics[i] = Topics[i].Trim().ToLower();
         }
 
-        SerializeChatResponse(response);
-
-        foreach(GameQuestion q in Questions)
+        if (SerializeChatResponse(response))
         {
-            Question json = JSONifyQuestion(q);
-            if (json != null)
+            foreach(GameQuestion q in Questions)
             {
-                APIGetter.Instance.PostQuestion(json);
+                Question json = JSONifyQuestion(q);
+                if (json != null)
+                {
+                    APIGetter.Instance.PostQuestion(json);
+                }
             }
         }
     }
 
-    private void SerializeChatResponse(string response)
+    /// <returns> Boolean success of try-catch serialization </returns>
+    private bool SerializeChatResponse(string response)
     {
         try
         {
@@ -128,11 +130,13 @@ public class ChatResponseSerializer : Singleton<ChatResponseSerializer>
         
             Questions.RemoveAt(0); // remove junk currentQuestion
             StateMachine.Instance.ChangeToState(State.RoundStart);
+            return true;
         }
 
         catch (Exception err)
         {
-            StateMachine.Instance.ThrowError(err.Message);
+            StateMachine.Instance.ThrowError("Serialization of ChatGPT response failed - please try again", State.MainMenu);
+            return false;
         }
     }
 

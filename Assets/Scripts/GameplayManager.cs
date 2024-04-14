@@ -2,10 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using System.Linq;
 
 public class GameplayManager : Singleton<GameplayManager>
 {
-    [SerializeField] private GameObject Canvas_GameScreen;
     [SerializeField] private GameObject Container_Answers;
     [SerializeField] private TMP_Text timerText;
     [SerializeField] private TMP_Text questionText;
@@ -50,7 +50,6 @@ public class GameplayManager : Singleton<GameplayManager>
     # region Gameplay Flow (in call order)
     public void StartNewRound()
     {
-        Canvas_GameScreen.SetActive(true);
         questions = ChatResponseSerializer.Instance.Questions;
         TryStartQuestion();
     }
@@ -59,7 +58,7 @@ public class GameplayManager : Singleton<GameplayManager>
     {
         if (questions.Count > 0)
         {
-            int randomQuestionIndex = Random.Range(0, questions.Count-1);
+            int randomQuestionIndex = UnityEngine.Random.Range(0, questions.Count-1);
             GameQuestion randomQuestion = questions[randomQuestionIndex];
             questions.RemoveAt(randomQuestionIndex);
             StartQuestion(randomQuestion);
@@ -73,18 +72,22 @@ public class GameplayManager : Singleton<GameplayManager>
 
     private void OnGameEnd()
     {
+        _chosenAnswer = null;
+        totalScore = 0;
+        _timeRemainingWhenAnswer = 0;
+        _currentQuestion = null;
+        questions.Clear();
         StateMachine.Instance.ChangeToState(State.OverallResults);
-        Canvas_GameScreen.SetActive(false);
     }
 
     private void StartQuestion(GameQuestion q)
     {
-        StateMachine.Instance.ChangeToState(State.QuestionDisplay);
         _currentQuestion = q;
         questionText.text = q.question;
+        var shuffledAnswers = q.answers.OrderBy( x => Random.value ).ToArray();
         for (int i = 0; i < 4; i++)
         {
-            answers[i].SetAnswer(q.answers[i]);
+            answers[i].SetAnswer(shuffledAnswers[i]);
             if (answers[i].AnswerText == q.correctAnswer)
             {
                 answers[i].IsCorrectAnswer = true;
@@ -96,7 +99,7 @@ public class GameplayManager : Singleton<GameplayManager>
     private IEnumerator ShowAnswers()
     {
         yield return new WaitForSeconds(ShowAnswersDelay);
-        StateMachine.Instance.ChangeToState(State.Answering);
+        SoundManager.Instance.PlaySFX(Random.Range(0,2));
         Container_Answers.SetActive(true);
         StartCoroutine(StartTimer(TimePerQuestion));
     }
@@ -116,7 +119,6 @@ public class GameplayManager : Singleton<GameplayManager>
 
     private IEnumerator OnRoundTimerEnd()
     {
-        StateMachine.Instance.ChangeToState(State.QuestionResults);
         answers.ForEach((answer)=>
         {
             answer.Enable();
@@ -126,6 +128,7 @@ public class GameplayManager : Singleton<GameplayManager>
 
         if (_chosenAnswer != null && _chosenAnswer.IsCorrectAnswer)
         {
+            SoundManager.Instance.PlaySFX(2);
             Debug.Log("Correct! It was: " + _chosenAnswer.AnswerText);
             Debug.Log("Your round score: " + GetQuestionScore());
             totalScore += GetQuestionScore();

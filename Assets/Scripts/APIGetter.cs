@@ -66,7 +66,7 @@ public class APIGetter : Singleton<APIGetter>
 
         if (req.result == UnityWebRequest.Result.ConnectionError)
         {
-            Debug.LogError(req.error);
+            StateMachine.Instance.ThrowError(req.error);
         }
         else
         {
@@ -81,7 +81,7 @@ public class APIGetter : Singleton<APIGetter>
 
         if (req.result == UnityWebRequest.Result.ConnectionError)
         {
-            Debug.Log(req.error);
+            StateMachine.Instance.ThrowError(req.error);
         }
         else
         {

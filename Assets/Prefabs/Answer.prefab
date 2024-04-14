@@ -40,6 +40,22 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5083145519497176821}
     m_Modifications:
+    - target: {fileID: 1939269308049649049, guid: 31bd8cf64d0ce49d0902be71145eed0e, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 200.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 1939269308049649049, guid: 31bd8cf64d0ce49d0902be71145eed0e, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 30.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3578966143928588343, guid: 31bd8cf64d0ce49d0902be71145eed0e, type: 3}
+      propertyPath: m_text
+      value: NEW TEXT
+      objectReference: {fileID: 0}
+    - target: {fileID: 3578966143928588343, guid: 31bd8cf64d0ce49d0902be71145eed0e, type: 3}
+      propertyPath: m_fontSize
+      value: 37.35
+      objectReference: {fileID: 0}
     - target: {fileID: 3742628604030500437, guid: 31bd8cf64d0ce49d0902be71145eed0e, type: 3}
       propertyPath: m_Name
       value: Button

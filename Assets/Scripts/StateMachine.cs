@@ -9,9 +9,6 @@ public enum State
     TopicSelect,
     TopicSubmit,
     RoundStart,
-    QuestionDisplay,
-    Answering,
-    QuestionResults,
     OverallResults,
     None
 }
@@ -25,6 +22,7 @@ public class StateMachine : Singleton<StateMachine>
     [SerializeField] private GameObject Canvas_LoadingScreen;
     [SerializeField] public GameObject Canvas_ErrorMessage;
     [SerializeField] private GameObject Canvas_OverallResults;
+    [SerializeField] private GameObject Canvas_GameScreen;
 
     # region Initializers
 
@@ -59,22 +57,19 @@ public class StateMachine : Singleton<StateMachine>
         {
             case State.MainMenu:
                 Canvas_MainMenu.SetActive(true);
+                SoundManager.Instance.PlayBackgroundMusic();
                 break;
             case State.TopicSelect:
                 Canvas_Topics.SetActive(true);
                 break;
             case State.TopicSubmit:
                 Canvas_LoadingScreen.SetActive(true);
+                SoundManager.Instance.FadeOutMusic(3f);
                 OpenAI.ChatGPT.Instance.ValidateTopics();
                 break;
             case State.RoundStart:
+                Canvas_GameScreen.SetActive(true);
                 GameplayManager.Instance.StartNewRound();
-                break;
-            case State.QuestionDisplay:
-                break;
-            case State.Answering:
-                break;
-            case State.QuestionResults:
                 break;
             case State.OverallResults:
                 Canvas_OverallResults.SetActive(true);
@@ -96,12 +91,7 @@ public class StateMachine : Singleton<StateMachine>
                 Canvas_LoadingScreen.SetActive(false);
                 break;
             case State.RoundStart:
-                break;
-            case State.QuestionDisplay:
-                break;
-            case State.Answering:
-                break;
-            case State.QuestionResults:
+                Canvas_GameScreen.SetActive(false);
                 break;
             case State.OverallResults:
                 Canvas_OverallResults.SetActive(false);
