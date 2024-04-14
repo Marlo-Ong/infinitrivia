@@ -4,10 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using OpenAI;
-using Unity.Mathematics;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Windows.Speech;
 
 /// <summary>
 /// Version of question object with in-game properties
