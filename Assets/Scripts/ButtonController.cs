@@ -88,6 +88,9 @@ public class ButtonController : MonoBehaviour
                 var answerClicked = GetComponentInParent<AnswerButtonController>();
                 GameplayManager.Instance.OnAnswerClicked(answerClicked);
                 break;
+            case ButtonTypes.Home:
+                StateMachine.Instance.ChangeToState(State.MainMenu);
+                break;
         }
     }
 

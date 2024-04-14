@@ -24,6 +24,7 @@ public class StateMachine : Singleton<StateMachine>
     [SerializeField] private GameObject Canvas_Topics;
     [SerializeField] private GameObject Canvas_LoadingScreen;
     [SerializeField] public GameObject Canvas_ErrorMessage;
+    [SerializeField] private GameObject Canvas_OverallResults;
 
     # region Initializers
 
@@ -76,6 +77,7 @@ public class StateMachine : Singleton<StateMachine>
             case State.QuestionResults:
                 break;
             case State.OverallResults:
+                Canvas_OverallResults.SetActive(true);
                 break;
         }
     }
@@ -102,6 +104,7 @@ public class StateMachine : Singleton<StateMachine>
             case State.QuestionResults:
                 break;
             case State.OverallResults:
+                Canvas_OverallResults.SetActive(false);
                 break;
         }
     }

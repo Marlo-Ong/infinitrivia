@@ -9,9 +9,12 @@ public class GameplayManager : Singleton<GameplayManager>
     [SerializeField] private GameObject Container_Answers;
     [SerializeField] private TMP_Text timerText;
     [SerializeField] private TMP_Text questionText;
+    [SerializeField] private TMP_Text scoreText;
     [SerializeField] private List<AnswerButtonController> answers;
     public int ShowAnswersDelay;
     public int TimePerQuestion;
+    public int ResultsScreenDuration;
+    private int totalScore;
     private int _changedAnswerCount = 0;
     private AnswerButtonController _chosenAnswer;
     private GameQuestion _currentQuestion;
@@ -19,6 +22,32 @@ public class GameplayManager : Singleton<GameplayManager>
     private int _timeRemaining;
     private int _timeRemainingWhenAnswer;
 
+    # region Non-Loop Methods
+    public void OnAnswerClicked(AnswerButtonController a)
+    {
+        answers.ForEach((answer)=>{answer.Enable();});
+        a.Disable();
+        _chosenAnswer = a;
+        _changedAnswerCount++;
+        _timeRemainingWhenAnswer = _timeRemaining;
+    }
+
+    private int GetQuestionScore()
+    {
+        int baseCorrectAnswerScore = 50; 
+        int speedBonus = 100 * (_timeRemainingWhenAnswer / TimePerQuestion);
+
+        int steadfastBonus = 100;
+        if (_changedAnswerCount == 2) steadfastBonus /= 2;
+        else if (_changedAnswerCount == 3) steadfastBonus /= 4;
+        else if (_changedAnswerCount > 3) steadfastBonus = 0;
+
+        return baseCorrectAnswerScore + speedBonus + steadfastBonus;
+    }
+
+    # endregion
+
+    # region Gameplay Flow (in call order)
     public void StartNewRound()
     {
         Canvas_GameScreen.SetActive(true);
@@ -44,20 +73,13 @@ public class GameplayManager : Singleton<GameplayManager>
 
     private void OnGameEnd()
     {
-        Debug.Log("No more questions!");
-    }
-
-    public void OnAnswerClicked(AnswerButtonController a)
-    {
-        answers.ForEach((answer)=>{answer.Enable();});
-        a.Disable();
-        _chosenAnswer = a;
-        _changedAnswerCount++;
-        _timeRemainingWhenAnswer = _timeRemaining;
+        StateMachine.Instance.ChangeToState(State.OverallResults);
+        Canvas_GameScreen.SetActive(false);
     }
 
     private void StartQuestion(GameQuestion q)
     {
+        StateMachine.Instance.ChangeToState(State.QuestionDisplay);
         _currentQuestion = q;
         questionText.text = q.question;
         for (int i = 0; i < 4; i++)
@@ -68,47 +90,53 @@ public class GameplayManager : Singleton<GameplayManager>
                 answers[i].IsCorrectAnswer = true;
             }
         }
+        StartCoroutine(ShowAnswers());
+    }
+
+    private IEnumerator ShowAnswers()
+    {
+        yield return new WaitForSeconds(ShowAnswersDelay);
+        StateMachine.Instance.ChangeToState(State.Answering);
         Container_Answers.SetActive(true);
-
         StartCoroutine(StartTimer(TimePerQuestion));
-    }
-
-    private void OnRoundTimerEnd()
-    {
-        StateMachine.Instance.ChangeToState(State.QuestionResults);
-        Container_Answers.SetActive(false);
-
-        if (_chosenAnswer != null && _chosenAnswer.IsCorrectAnswer)
-        {
-            Debug.Log("Correct! It was: " + _chosenAnswer.AnswerText);
-            Debug.Log("Your score: " + GetQuestionScore());
-        }
-        TryStartQuestion();
-    }
-
-    private int GetQuestionScore()
-    {
-        int baseCorrectAnswerScore = 50; 
-        int speedBonus = 100 * (_timeRemainingWhenAnswer / TimePerQuestion);
-
-        int steadfastBonus = 100;
-        if (_changedAnswerCount == 2) steadfastBonus /= 2;
-        else if (_changedAnswerCount == 3) steadfastBonus /= 4;
-        else if (_changedAnswerCount > 3) steadfastBonus = 0;
-
-        return baseCorrectAnswerScore + speedBonus + steadfastBonus;
     }
 
     private IEnumerator StartTimer(int totalTime)
     {
         _timeRemaining = totalTime;
-        while (_timeRemaining > 0)
+        while (_timeRemaining >= 0)
         {
             timerText.text = "Time: " + _timeRemaining;
             yield return new WaitForSeconds(1);
             _timeRemaining -= 1;
         }
 
-        OnRoundTimerEnd();
+        StartCoroutine(OnRoundTimerEnd());
     }
+
+    private IEnumerator OnRoundTimerEnd()
+    {
+        StateMachine.Instance.ChangeToState(State.QuestionResults);
+        answers.ForEach((answer)=>
+        {
+            if (answer.IsCorrectAnswer) answer.ChangeButtonColor(Color.green);
+            else answer.ChangeButtonColor(Color.red);
+        });
+
+        if (_chosenAnswer != null && _chosenAnswer.IsCorrectAnswer)
+        {
+            Debug.Log("Correct! It was: " + _chosenAnswer.AnswerText);
+            Debug.Log("Your round score: " + GetQuestionScore());
+            totalScore += GetQuestionScore();
+            scoreText.text = "Score: " + totalScore;
+        }
+
+        yield return new WaitForSeconds(ResultsScreenDuration);
+
+        Container_Answers.SetActive(false);
+        answers.ForEach((answer)=>{answer.Reset();});
+        TryStartQuestion();
+    }
+
+    # endregion
 }

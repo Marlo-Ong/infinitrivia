@@ -21,8 +21,17 @@ public class AnswerButtonController : ButtonController
 
     public void Reset()
     {
+        ChangeButtonColor(Color.white);
         SetAnswer("");
         IsCorrectAnswer = false;
         Enable();
+    }
+
+    public void ChangeButtonColor(Color newColor)
+    {
+        var newColorBlock = button.colors;
+        newColorBlock.normalColor = newColor;
+        newColorBlock.disabledColor = newColor;
+        button.colors = newColorBlock;
     }
 }

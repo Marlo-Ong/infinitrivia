@@ -93,6 +93,12 @@ namespace OpenAI
                 var message = completionResponse.Choices[0].Message;
                 message.Content = message.Content.Trim();
 
+                // clear fields
+                foreach(TMP_InputField field in inputFields)
+                {
+                    field.text = "";
+                }
+
                 Debug.Log("Chat request completed for: " + topics);
                 OnChatCompletion?.Invoke(topics, message.Content);
             }
