@@ -159,6 +159,7 @@ public class GameplayManager : Singleton<GameplayManager>
         }
 
         yield return new WaitForSeconds(ResultsScreenDuration);
+        SoundManager.Instance.PlaySFX(5);
 
         Container_Answers.SetActive(false);
         scoreText.gameObject.SetActive(true);
