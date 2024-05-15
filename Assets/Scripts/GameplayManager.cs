@@ -32,11 +32,14 @@ public class GameplayManager : Singleton<GameplayManager>
     # region Non-Loop Methods
     public void OnAnswerClicked(AnswerButtonController a)
     {
-        answerButtons.ForEach((answer)=>{answer.Enable();});
-        a.Disable();
-        _chosenAnswer = a;
-        _changedAnswerCount++;
-        _answerTime = _timeRemaining;
+        if (_chosenAnswer != a)
+        {
+            answerButtons.ForEach((answer)=>{answer.Enable();});
+            a.Disable();
+            if (_chosenAnswer != null) _changedAnswerCount++;
+            _chosenAnswer = a;
+            _answerTime = _timeRemaining;
+        }
     }
 
     private int GetQuestionScore()
@@ -45,10 +48,7 @@ public class GameplayManager : Singleton<GameplayManager>
         float preSpeedBonus = (float)_answerTime / (float)TimePerQuestion;
         int speedBonus = (int)(100f * preSpeedBonus);
 
-        int firstTryBonus = 100;
-        if (_changedAnswerCount == 2) firstTryBonus /= 2;
-        else if (_changedAnswerCount == 3) firstTryBonus /= 4;
-        else if (_changedAnswerCount > 3) firstTryBonus = 0;
+        int firstTryBonus = _changedAnswerCount == 0 ? 100 : 0;
 
         if (speedBonus > 0)
         {
@@ -94,9 +94,7 @@ public class GameplayManager : Singleton<GameplayManager>
     {
         _chosenAnswer = null;
         totalScore = 0;
-        _answerTime = 0;
         _currentQuestion = null;
-        _changedAnswerCount = 0;
         questions.Clear();
 
         // reset round score history
@@ -180,6 +178,10 @@ public class GameplayManager : Singleton<GameplayManager>
 
         Container_Answers.SetActive(false);
         scoreText.gameObject.SetActive(true);
+
+        // reset round variables
+        _changedAnswerCount = 0;
+        _answerTime = 0;
         answerButtons.ForEach((answer)=>{answer.Reset();});
         TryStartQuestion();
     }
