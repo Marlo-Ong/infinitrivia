@@ -16,7 +16,7 @@ public class GameplayManager : Singleton<GameplayManager>
     [SerializeField] private TMP_Text firstTryBonusText;
     [SerializeField] private TMP_Text speedBonusText;
     [SerializeField] private TMP_Text correctAnswerBonusText;
-    [SerializeField] private List<AnswerButtonController> answers;
+    [SerializeField] private List<AnswerButtonController> answerButtons;
     public int ShowAnswersDelay;
     public int TimePerQuestion;
     public int ResultsScreenDuration;
@@ -31,7 +31,7 @@ public class GameplayManager : Singleton<GameplayManager>
     # region Non-Loop Methods
     public void OnAnswerClicked(AnswerButtonController a)
     {
-        answers.ForEach((answer)=>{answer.Enable();});
+        answerButtons.ForEach((answer)=>{answer.Enable();});
         a.Disable();
         _chosenAnswer = a;
         _changedAnswerCount++;
@@ -101,17 +101,24 @@ public class GameplayManager : Singleton<GameplayManager>
 
     private void StartQuestion(GameQuestion q)
     {
+        foreach (AnswerButtonController button in answerButtons)
+        {
+            button.gameObject.SetActive(false);
+        }
+
         _currentQuestion = q;
         questionText.text = q.question;
         var shuffledAnswers = q.answers.OrderBy( x => Random.value ).ToArray();
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < q.answers.Count; i++)
         {
-            answers[i].SetAnswer(shuffledAnswers[i]);
-            if (answers[i].AnswerText == q.correctAnswer)
+            answerButtons[i].gameObject.SetActive(true);
+            answerButtons[i].SetAnswer(shuffledAnswers[i]);
+            if (answerButtons[i].AnswerText == q.correctAnswer)
             {
-                answers[i].IsCorrectAnswer = true;
+                answerButtons[i].IsCorrectAnswer = true;
             }
         }
+
         StartCoroutine(ShowAnswers());
     }
 
@@ -139,7 +146,7 @@ public class GameplayManager : Singleton<GameplayManager>
 
     private IEnumerator OnRoundTimerEnd()
     {
-        answers.ForEach((answer)=>
+        answerButtons.ForEach((answer)=>
         {
             answer.Enable();
             if (answer.IsCorrectAnswer) answer.ChangeButtonColor(Color.green);
@@ -163,7 +170,7 @@ public class GameplayManager : Singleton<GameplayManager>
 
         Container_Answers.SetActive(false);
         scoreText.gameObject.SetActive(true);
-        answers.ForEach((answer)=>{answer.Reset();});
+        answerButtons.ForEach((answer)=>{answer.Reset();});
         TryStartQuestion();
     }
 

@@ -4059,7 +4059,7 @@ MonoBehaviour:
   firstTryBonusText: {fileID: 1699996837}
   speedBonusText: {fileID: 1390803599}
   correctAnswerBonusText: {fileID: 395278811}
-  answers:
+  answerButtons:
   - {fileID: 158940024}
   - {fileID: 568522931}
   - {fileID: 1018716202}

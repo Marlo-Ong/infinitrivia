@@ -98,6 +98,7 @@ public class ChatResponseSerializer : Singleton<ChatResponseSerializer>
                 if (Regex.IsMatch(line, "^[0-9]. (.*)$") || line.StartsWith("Question")) // line is a numbered question
                 {
                     // add a copy of this question to the list
+                    currentQuestion.answers.Distinct().ToList();
                     GameQuestion newQ = currentQuestion.DeepCopy();
                     Questions.Add(newQ);
 
@@ -125,7 +126,12 @@ public class ChatResponseSerializer : Singleton<ChatResponseSerializer>
                 }
             }
         
-            Questions.RemoveAt(0); // remove junk currentQuestion
+            // add last question
+            currentQuestion.answers.Distinct().ToList();
+            GameQuestion lastQuestion = currentQuestion.DeepCopy();
+            Questions.Add(lastQuestion);
+
+            Questions.RemoveAt(0); // remove junk first question
             StateMachine.Instance.ChangeToState(State.RoundStart);
             return true;
         }
