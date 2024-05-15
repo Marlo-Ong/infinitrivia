@@ -101,11 +101,11 @@ public class StateMachine : Singleton<StateMachine>
 
     # endregion
 
-    public void ThrowError(string err, State revertState = State.None)
+    public void ThrowError(string err, string userErr = null, State revertState = State.None)
     {
         Debug.LogError(err);
         Canvas_ErrorMessage.SetActive(true);
-        Canvas_ErrorMessage.GetComponentInChildren<TMP_Text>().text = err;
+        Canvas_ErrorMessage.GetComponentInChildren<TMP_Text>().text = userErr ?? err;
         if (revertState != State.None)
         {
             ChangeToState(revertState);

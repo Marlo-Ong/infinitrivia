@@ -138,7 +138,7 @@ public class ChatResponseSerializer : Singleton<ChatResponseSerializer>
 
         catch (Exception err)
         {
-            StateMachine.Instance.ThrowError("Serialization of ChatGPT response failed - please try again", State.MainMenu);
+            StateMachine.Instance.ThrowError(err.Message, "Serialization of ChatGPT response failed - please try again", State.MainMenu);
             return false;
         }
     }
@@ -162,7 +162,7 @@ public class ChatResponseSerializer : Singleton<ChatResponseSerializer>
 
         catch (Exception err)
         {
-            StateMachine.Instance.ThrowError(err.Message);
+            Debug.Log(err.Message); // non-essential error
         }
 
         return null;
