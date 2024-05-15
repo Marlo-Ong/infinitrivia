@@ -79,6 +79,8 @@ public class ChatResponseSerializer : Singleton<ChatResponseSerializer>
         }
     }
 
+    /// <summary> Parses and saves entire GPT block response for valid questions and answers. </summary>
+    /// <notes> The first question produced will be empty due to order which deep copy occurs. </notes>
     /// <returns> Boolean success of try-catch serialization </returns>
     private bool SerializeChatResponse(string response)
     {
@@ -97,8 +99,14 @@ public class ChatResponseSerializer : Singleton<ChatResponseSerializer>
                 Debug.Log(line);
                 if (Regex.IsMatch(line, "^[0-9]. (.*)$") || line.StartsWith("Question")) // line is a numbered question
                 {
+                    // remove duplicate answers
+                    currentQuestion.answers = currentQuestion.answers.Distinct().ToList();
+                    if (currentQuestion.answers.Count <= 1 && Questions.Count > 0)
+                    {
+                        throw new Exception("Invalid question has 1 or less answers attached.");
+                    }
+
                     // add a copy of this question to the list
-                    currentQuestion.answers.Distinct().ToList();
                     GameQuestion newQ = currentQuestion.DeepCopy();
                     Questions.Add(newQ);
 
@@ -138,7 +146,7 @@ public class ChatResponseSerializer : Singleton<ChatResponseSerializer>
 
         catch (Exception err)
         {
-            StateMachine.Instance.ThrowError(err.Message, "Serialization of ChatGPT response failed - please try again", State.MainMenu);
+            StateMachine.Instance.ThrowError(err.Message, "Something went wrong creating the questions - please try again", State.MainMenu);
             return false;
         }
     }
@@ -158,6 +166,7 @@ public class ChatResponseSerializer : Singleton<ChatResponseSerializer>
                 question = q.question
             };
             return newQ;
+
         }
 
         catch (Exception err)

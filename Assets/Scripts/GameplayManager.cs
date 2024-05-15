@@ -27,6 +27,7 @@ public class GameplayManager : Singleton<GameplayManager>
     private List<GameQuestion> questions;
     private int _timeRemaining;
     private int _answerTime;
+    private List<GameObject> _scoreHistoryIcons;
 
     # region Non-Loop Methods
     public void OnAnswerClicked(AnswerButtonController a)
@@ -68,6 +69,7 @@ public class GameplayManager : Singleton<GameplayManager>
     # region Gameplay Flow (in call order)
     public void StartNewRound()
     {
+        _scoreHistoryIcons = new();
         questions = ChatResponseSerializer.Instance.Questions;
         TryStartQuestion();
     }
@@ -96,6 +98,14 @@ public class GameplayManager : Singleton<GameplayManager>
         _currentQuestion = null;
         _changedAnswerCount = 0;
         questions.Clear();
+
+        // reset round score history
+        foreach (GameObject icon in _scoreHistoryIcons)
+        {
+            Destroy(icon);
+        }
+        _scoreHistoryIcons.Clear();
+
         StateMachine.Instance.ChangeToState(State.OverallResults);
     }
 
@@ -178,21 +188,26 @@ public class GameplayManager : Singleton<GameplayManager>
     {
         SoundManager.Instance.PlaySFX(2);
         correctAnswerBonusText.gameObject.SetActive(true);
-        var icon = Instantiate(checkmarkIcon);
-        icon.transform.parent = Container_ScoreHistory.transform;
-        icon.SetActive(true);
-        icon.transform.localScale = new(1,1,1);
+        AddIconToHistory(checkmarkIcon);
         totalScore += GetQuestionScore();
         scoreText.text = "Score: " + totalScore;
     }
 
     private void GetIncorrectAnswer()
     {
-        var icon = Instantiate(redxIcon);
-        icon.transform.parent = Container_ScoreHistory.transform;
+        AddIconToHistory(redxIcon);
+        SoundManager.Instance.PlaySFX(3);
+    }
+
+    private GameObject AddIconToHistory(GameObject parentPrefab)
+    {
+        GameObject icon = Instantiate(parentPrefab);
+        icon.transform.SetParent(Container_ScoreHistory.transform, worldPositionStays: false);
+        _scoreHistoryIcons.Add(icon);
         icon.SetActive(true);
         icon.transform.localScale = new(1,1,1);
-        SoundManager.Instance.PlaySFX(3);
+
+        return icon;
     }
 
     # endregion

@@ -57,7 +57,7 @@ namespace OpenAI
 
             if (topics == "")
             {
-                StateMachine.Instance.ThrowError("You must input at least one topic!", State.TopicSelect);
+                StateMachine.Instance.ThrowError("All text input fields are empty or have unrecognized characters.", "You must input at least one topic!", State.TopicSelect);
             }
             else
             {
