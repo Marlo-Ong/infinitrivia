@@ -27,6 +27,7 @@ public class GameplayManager : Singleton<GameplayManager>
     private List<GameQuestion> questions;
     private int _timeRemaining;
     private int _answerTime;
+    private int _totalQuestionCount;
     private List<GameObject> _scoreHistoryIcons;
 
     # region Non-Loop Methods
@@ -71,6 +72,7 @@ public class GameplayManager : Singleton<GameplayManager>
     {
         _scoreHistoryIcons = new();
         questions = ChatResponseSerializer.Instance.Questions;
+        _totalQuestionCount = questions.Count;
         TryStartQuestion();
     }
 
@@ -92,7 +94,6 @@ public class GameplayManager : Singleton<GameplayManager>
 
     private void OnGameEnd()
     {
-        _chosenAnswer = null;
         totalScore = 0;
         _currentQuestion = null;
         questions.Clear();
@@ -182,6 +183,7 @@ public class GameplayManager : Singleton<GameplayManager>
         // reset round variables
         _changedAnswerCount = 0;
         _answerTime = 0;
+        _chosenAnswer = null;
         answerButtons.ForEach((answer)=>{answer.Reset();});
         TryStartQuestion();
     }
@@ -192,7 +194,7 @@ public class GameplayManager : Singleton<GameplayManager>
         correctAnswerBonusText.gameObject.SetActive(true);
         AddIconToHistory(checkmarkIcon);
         totalScore += GetQuestionScore();
-        scoreText.text = "Score: " + totalScore;
+        scoreText.text = "Score: " + totalScore + "/" + (250 * _totalQuestionCount).ToString();
     }
 
     private void GetIncorrectAnswer()
