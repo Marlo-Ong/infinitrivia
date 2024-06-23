@@ -18,10 +18,12 @@ public class IdleTextAnimation : MonoBehaviour
     [SerializeField] private bool _loop;
     [SerializeField] private float _raiseMagnitude;
     private Vector3 _startingPos;
+    private GameObject _gameObj;
 
     void Start()
     {
         _startingPos = transform.localPosition;
+        _gameObj = this.gameObject;
     }
 
     void OnEnable()
@@ -29,8 +31,11 @@ public class IdleTextAnimation : MonoBehaviour
         StartAnimation();
     }
 
-    private void StartAnimation()
+    public void StartAnimation()
     {
+        if (_gameObj == null || _gameObj.activeInHierarchy == false)
+            return;
+
         switch (anim)
         {
             case IdleAnimation.Rotate:

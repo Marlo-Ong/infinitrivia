@@ -32,6 +32,7 @@ public class ButtonController : MonoBehaviour
     void Start()
     {
         InitializeEventTriggers();
+        _startScale = transform.localScale;
     }
 
     private void InitializeEventTriggers()
@@ -80,7 +81,6 @@ public class ButtonController : MonoBehaviour
         if (gameObject.GetComponent<Button>().interactable)
         {
             const float DURATION = 0.15f;
-            _startScale = transform.localScale;
             _handleButtonAnimation ??= StartCoroutine(ContinueButtonAnimateScale(DURATION));
         }
     }
