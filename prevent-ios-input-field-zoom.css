@@ -1,0 +1,19 @@
+/* via @ilezhnin (https://forum.unity.com/threads/deactivate-automatic-zoom-of-ios-15-on-inputfield-in-webgl-buld.1420541/) */
+
+input[type="text"]
+{
+    /* enlarge by 16/12 = 133.33% */
+    border-radius: 6.666666667px;
+    font-size: 16px;
+    line-height: 26.666666667px;
+    padding: 6.666666667px;
+    width: 133.333333333%;
+ 
+    /* scale down by 12/16 = 75% */
+    transform: scale(0.75);
+    transform-origin: left top;
+ 
+    /* remove extra white space */
+    margin-bottom: -10px;
+    margin-right: -33.333333333%;
+}
