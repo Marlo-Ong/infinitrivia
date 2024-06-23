@@ -8,8 +8,9 @@ public class GameplayManager : Singleton<GameplayManager>
 {
     [SerializeField] private GameObject Container_Answers;
     [SerializeField] private GameObject Container_ScoreHistory;
-    [SerializeField] private GameObject checkmarkIcon;
-    [SerializeField] private GameObject redxIcon;
+    [SerializeField] private GameObject scoreBoxPrefab;
+    [SerializeField] private Sprite checkmarkIcon;
+    [SerializeField] private Sprite redxIcon;
     [SerializeField] private TMP_Text timerText;
     [SerializeField] private TMP_Text questionText;
     [SerializeField] private TMP_Text scoreText;
@@ -25,6 +26,7 @@ public class GameplayManager : Singleton<GameplayManager>
     private AnswerButtonController _chosenAnswer;
     private GameQuestion _currentQuestion;
     private List<GameQuestion> questions;
+    private int _currentQuestionIndex;
     private int _timeRemaining;
     private int _answerTime;
     private int _totalQuestionCount;
@@ -70,9 +72,21 @@ public class GameplayManager : Singleton<GameplayManager>
     # region Gameplay Flow (in call order)
     public void StartNewRound()
     {
-        _scoreHistoryIcons = new();
         questions = ChatResponseSerializer.Instance.Questions;
+
+        // Populate score bar
+        _scoreHistoryIcons = new();
+        for (int i = 0; i < questions.Count; i++)
+        {
+            GameObject icon = Instantiate(scoreBoxPrefab);
+            icon.transform.GetChild(0).GetComponent<TMP_Text>().text = (i + 1).ToString();
+            icon.transform.SetParent(Container_ScoreHistory.transform, worldPositionStays: false);
+            _scoreHistoryIcons.Add(icon);
+            icon.SetActive(true);
+        }
+
         _totalQuestionCount = questions.Count;
+        _currentQuestionIndex = -1;
         TryStartQuestion();
     }
 
@@ -116,6 +130,7 @@ public class GameplayManager : Singleton<GameplayManager>
         }
 
         _currentQuestion = q;
+        _currentQuestionIndex++;
         questionText.text = q.question;
         var shuffledAnswers = q.answers.OrderBy( x => Random.value ).ToArray();
         for (int i = 0; i < q.answers.Count; i++)
@@ -162,16 +177,13 @@ public class GameplayManager : Singleton<GameplayManager>
             else answer.ChangeButtonColor(Color.red);
         });
 
-        if (_chosenAnswer != null)
+        if (_chosenAnswer != null && _chosenAnswer.IsCorrectAnswer)
         {
-            if (_chosenAnswer.IsCorrectAnswer)
-            {
-                GetCorrectAnswer();
-            }
-            else
-            {
-                GetIncorrectAnswer();
-            }
+            GetCorrectAnswer();
+        }
+        else
+        {
+            GetIncorrectAnswer();
         }
 
         yield return new WaitForSeconds(ResultsScreenDuration);
@@ -192,26 +204,21 @@ public class GameplayManager : Singleton<GameplayManager>
     {
         SoundManager.Instance.PlaySFX(2);
         correctAnswerBonusText.gameObject.SetActive(true);
-        AddIconToHistory(checkmarkIcon);
+        ChangeScoreHistoryIcon(correctAnswer: true);
         totalScore += GetQuestionScore();
         scoreText.text = "Score: " + totalScore + "/" + (250 * _totalQuestionCount).ToString();
     }
 
     private void GetIncorrectAnswer()
     {
-        AddIconToHistory(redxIcon);
+        ChangeScoreHistoryIcon(correctAnswer: false);
         SoundManager.Instance.PlaySFX(3);
     }
 
-    private GameObject AddIconToHistory(GameObject parentPrefab)
+    private void ChangeScoreHistoryIcon(bool correctAnswer)
     {
-        GameObject icon = Instantiate(parentPrefab);
-        icon.transform.SetParent(Container_ScoreHistory.transform, worldPositionStays: false);
-        _scoreHistoryIcons.Add(icon);
-        icon.SetActive(true);
-        icon.transform.localScale = new(1,1,1);
-
-        return icon;
+        var checkBox = _scoreHistoryIcons[_currentQuestionIndex].transform.GetChild(1);
+        checkBox.GetComponent<SpriteRenderer>().sprite = correctAnswer ? checkmarkIcon : redxIcon;
     }
 
     # endregion
