@@ -24,6 +24,7 @@ public class APIGetter : Singleton<APIGetter>
     public static string URL = "https://66199d83125e9bb9f29a6b60.mockapi.io";
     public static event Action<string> OnGetAPIKey;
     public static event Action<List<Question>> OnGetQuestions;
+    public static List<Question> DBQuestions;
 
     void Start()
     {
@@ -87,6 +88,7 @@ public class APIGetter : Singleton<APIGetter>
         {
             Wrapper<Question> questionWrapper = JsonUtility.FromJson<Wrapper<Question>>("{\"Items\":" + req.downloadHandler.text + "}");
             List<Question> questions = questionWrapper.Items.ToList();
+            DBQuestions = questions;
             Debug.Log("Got questions: count " + questions.Count);
             OnGetQuestions?.Invoke(questions);
         }
