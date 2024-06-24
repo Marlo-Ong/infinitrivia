@@ -1,6 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -14,7 +12,11 @@ public enum ButtonTypes
     Submit,
     ErrorOK,
     Answer,
-    Next
+    Next,
+    HomeConfirmation,
+    HomeConfirmationOK,
+    HomeConfirmationCancel,
+    Mute,
 };
 
 public class ButtonController : MonoBehaviour
@@ -72,6 +74,19 @@ public class ButtonController : MonoBehaviour
                 break;
             case ButtonTypes.Home:
                 StateMachine.Instance.ChangeToState(State.MainMenu);
+                break;
+            case ButtonTypes.HomeConfirmation:
+                StateMachine.Instance.Canvas_HomeConfirmation.SetActive(true);
+                break;
+            case ButtonTypes.HomeConfirmationOK:
+                StateMachine.Instance.Canvas_HomeConfirmation.SetActive(false);
+                GameplayManager.Instance.Interrupt_QuitToHome();
+                break;
+            case ButtonTypes.HomeConfirmationCancel:
+                StateMachine.Instance.Canvas_HomeConfirmation.SetActive(false);
+                break;
+            case ButtonTypes.Mute:
+                SoundManager.Instance.ToggleAudio();
                 break;
         }
     }

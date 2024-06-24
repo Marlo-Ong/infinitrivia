@@ -31,6 +31,9 @@ public class GameplayManager : Singleton<GameplayManager>
     private int _answerTime;
     private int _totalQuestionCount;
     private List<GameObject> _scoreHistoryIcons;
+    private Coroutine showAnswersCoroutine;
+    private Coroutine startTimerCoroutine;
+    private Coroutine roundEndCoroutine;
 
     # region Non-Loop Methods
     public void OnAnswerClicked(AnswerButtonController a)
@@ -65,6 +68,19 @@ public class GameplayManager : Singleton<GameplayManager>
         }
 
         return baseCorrectAnswerScore + speedBonus + firstTryBonus;
+    }
+
+    public void Interrupt_QuitToHome()
+    {
+        if (this.showAnswersCoroutine != null)
+            StopCoroutine(this.showAnswersCoroutine);
+        if (this.startTimerCoroutine != null)
+            StopCoroutine(this.startTimerCoroutine);
+        if (this.roundEndCoroutine != null)
+            StopCoroutine(this.roundEndCoroutine);
+
+        OnGameEnd();
+        StateMachine.Instance.ChangeToState(State.MainMenu);
     }
 
     # endregion
@@ -103,23 +119,37 @@ public class GameplayManager : Singleton<GameplayManager>
         else
         {
             OnGameEnd();
+            if (StateMachine.Instance.CurrentState == State.RoundStart)
+                StateMachine.Instance.ChangeToState(State.OverallResults);
         }
     }
 
     private void OnGameEnd()
     {
+        SoundManager.Instance.StopCurrentAudio();
+
+        // reset game variables
         totalScore = 0;
         _currentQuestion = null;
-        questions.Clear();
+        _currentQuestionIndex = -1;
+        questions?.Clear();
 
         // reset round score history
-        foreach (GameObject icon in _scoreHistoryIcons)
+        if (_scoreHistoryIcons != null)
         {
-            Destroy(icon);
-        }
-        _scoreHistoryIcons.Clear();
+            foreach (GameObject icon in _scoreHistoryIcons)
+            {
+                Destroy(icon);
+            }
+            _scoreHistoryIcons.Clear();
+        } 
 
-        StateMachine.Instance.ChangeToState(State.OverallResults);
+        // reset round variables
+        Container_Answers.SetActive(false);
+        _changedAnswerCount = 0;
+        _answerTime = 0;
+        _chosenAnswer = null;
+        answerButtons.ForEach((answer)=>{answer.Reset();});
     }
 
     private void StartQuestion(GameQuestion q)

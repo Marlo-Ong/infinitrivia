@@ -8,6 +8,7 @@ public class SoundManager : Singleton<SoundManager>
     [SerializeField] private List<AudioClip> sfx;
     [SerializeField] private AudioSource musicSource;
     [SerializeField] private AudioSource sfxSource;
+    private bool masterAudioMuted;
 
     public void PlayBackgroundMusic()
     {
@@ -25,6 +26,34 @@ public class SoundManager : Singleton<SoundManager>
         {
             sfxSource.PlayOneShot(sfx[index]);
         }
+    }
+
+    public void StopCurrentAudio()
+    {
+        musicSource.Stop();
+        sfxSource.Stop();
+    }
+
+    public void MuteAudio()
+    {
+        masterAudioMuted = true;
+        musicSource.mute = true;
+        sfxSource.mute = true;
+    }
+
+    public void UnmuteAudio()
+    {
+        masterAudioMuted = false;
+        musicSource.mute = false;
+        sfxSource.mute = false;
+    }
+
+    public void ToggleAudio()
+    {
+        if (masterAudioMuted)
+            UnmuteAudio();
+        else
+            MuteAudio();
     }
 
     public void FadeOutMusic(float fadeDuration)

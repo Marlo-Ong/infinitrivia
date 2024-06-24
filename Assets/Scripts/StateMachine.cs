@@ -21,6 +21,7 @@ public class StateMachine : Singleton<StateMachine>
     [SerializeField] public GameObject Canvas_ErrorMessage;
     [SerializeField] private GameObject Canvas_OverallResults;
     [SerializeField] private GameObject Canvas_GameScreen;
+    [SerializeField] public GameObject Canvas_HomeConfirmation;
 
     # region Initializers
 
